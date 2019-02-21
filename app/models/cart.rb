@@ -12,7 +12,6 @@ class Cart < ApplicationRecord
   # where the code would implement a Cart.most_valuable and Cart.by_customer which
   # could be combined as Cart.most_valuable.by_customer(@customer).
 
-
   def calculate_total
     self.order_items.collect { |oi| oi.book.price * oi.quantity }.sum
   end

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :users, only: [:new, :create]
   resources :sessions, only: [:new, :create, :destroy]
   resources :authors do
-    resources :books, only: [:new, :create, :show]
+    resources :books, only: [:new, :create, :show, :index]
   end
   resources :order_items
   post '/order_items/create/:id', to: 'orderitems#create', as: 'add_book'

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  helper_method :current_cart
 
   def authorize
     redirect_to login_path unless logged_in
@@ -21,5 +22,4 @@ class ApplicationController < ActionController::Base
       Cart.new
     end
   end
-  helper_method :current_cart
 end

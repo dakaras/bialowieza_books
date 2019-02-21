@@ -7,14 +7,14 @@ class Author < ApplicationRecord
     first_name = self.name.split(' ', 2).first
   end
 
-  def family_name
-    family_name = self.name.split(' ', 2).last
+  def last_name
+    last_name = self.name.split(' ', 2).last
   end
 
-  def self.sorted_family_names
+  def self.sorted_last_names
     names = []
     self.all.map do |author|
-      names << author.family_name
+      names << author.last_name
     end
     names.sort
   end
