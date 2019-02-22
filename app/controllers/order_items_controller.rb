@@ -1,7 +1,7 @@
 class OrderItemsController < ApplicationController
   before_action :authorize
   before_action :logged_in
-  
+
   def index
     @order_items = current_cart.order_items
     @total_cost = calculate_total
@@ -24,7 +24,7 @@ class OrderItemsController < ApplicationController
 
   private
   def item_params
-    params.require(:order_item).permit(:quantity, :book_id)
+    params.require(:order_item).permit(:quantity, :book_id, :cart_id)
   end
 
   def calculate_total
