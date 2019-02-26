@@ -1,12 +1,13 @@
 <br><br>
 <img style="-webkit-user-select: none;cursor: zoom-in;" src="https://images.wisegeek.com/two-shelves-of-books.jpg" width="1500" height="300">
 
-<strong><h2><%= @book.title %></h2></strong>
-<strong><h3> Author: </strong><%= link_to @book.author.name, author_path(@book.author) %></h3>
-<strong>Price: </strong><p><%= number_to_currency @book.price %></p>
-<strong>Genre: </strong><p><%= @book.genre %></p>
-<strong>Summary:</strong> <p><%= @book.summary %></p>
-
+<p class="book_show">
+  <strong><h2><%= @book.title %></h2></strong>
+  <strong><h3> Author: </strong><%= link_to @book.author.name, author_path(@book.author) %></h3>
+  <strong>Price: </strong><p><%= number_to_currency @book.price %></p>
+  <strong>Genre: </strong><p><%= @book.genre %></p>
+  <strong>Summary:</strong> <p><%= @book.summary %></p>
+</p>
 <%= form_for @order_item do |f| %>
   <%= f.hidden_field :book_id, value: @book.id %>
   <%= f.number_field :quantity %>

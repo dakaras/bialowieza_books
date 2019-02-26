@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+gem 'jquery'
 
 ruby '2.3.3'
 gem 'active_model_serializers'
@@ -32,6 +33,7 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'thin'
 gem 'dotenv-rails'
+gem 'rb-readline'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

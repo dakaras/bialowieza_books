@@ -1,27 +1,29 @@
-<img style="-webkit-user-select: none;cursor: zoom-in;" src="https://images.wisegeek.com/two-shelves-of-books.jpg" width="1300" height="300">
+<img style="-webkit-user-select: none;cursor: zoom-in;" src="https://images.wisegeek.com/two-shelves-of-books.jpg" width="1500" height="300">
 
 <h2><%= @author.name %></h2>
 
-<% @author.books.each do |book| %>
-  <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %>
-  <strong><h3> Title: <%= link_to book.title, author_book_path(@author, book) %></h3></strong>
-  <strong><p> Genre: <%= book.genre %></p></strong>
+<ul id='author_show'>
+  <% @author.books.each do |book| %>
+    <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %>
+    <strong><h3> Title: <%= link_to book.title, author_book_path(@author, book) %></h3></strong>
+    <strong><p> Genre: <%= book.genre %></p></strong>
 
-  <% if !book.price.blank? %>
-    <strong><p> Price: <%= number_to_currency book.price %></p></strong>
+    <% if !book.price.blank? %>
+      <strong><p> Price: <%= number_to_currency book.price %></p></strong>
+    <% end %>
+    <% if !book.summary.blank? %>
+      <strong><p> Summary: <%= book.summary %></p></strong>
+    <% end %>
+
+    <%= form_for @order_item do |f| %>
+      <%= f.hidden_field :book_id, value: book.id %>
+      <%= f.number_field :quantity %>
+      <%= f.submit "Add to cart"%>
+    <% end %><br>
   <% end %>
-  <% if !book.summary.blank? %>
-    <strong><p> Summary: <%= book.summary %></p></strong>
-  <% end %>
+</ul>
 
-  <%= form_for @order_item do |f| %>
-    <%= f.hidden_field :book_id, value: book.id %>
-    <%= f.number_field :quantity %>
-    <%= f.submit "Add to cart"%>
-  <% end %><br>
-<% end %>
-
-<%= link_to "Create Custom Order", new_author_book_path(@author) %>
-<%= link_to "See Author's Published Works", authors_list_path %>
+<%= link_to "Request a Book to be Ordered", new_author_book_path(@author) %><br><br>
+<%= link_to "See All Authors' Published Works", authors_list_path %>
 
 <h3><%= link_to "Home", root_path %></h3>

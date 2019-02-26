@@ -31,10 +31,9 @@ class BooksController < ApplicationController
     @order_item = current_user.cart.order_items.new
     @book = Book.find_by(id: params[:id])
     @author = @book.author.name
-
     respond_to do |f|
-      f.html { render :index }
-      f.json {render json: @book}
+      f.html { render :show, layout: false }
+      f.json {render json: @book, layout: false}
     end
   end
 

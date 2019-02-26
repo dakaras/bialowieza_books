@@ -4,8 +4,8 @@
     <title>BookstoreApp</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag    'application', media: 'all'%>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <%= stylesheet_link_tag 'application', media: 'all'%>
     <%= javascript_include_tag 'application'%>
   </head>
 
@@ -15,7 +15,7 @@
       <strong><h3>Logged in as: <%= current_user.name.capitalize %></strong></h3>
       <h3>Email: <%= current_user.email %></h3>
       <strong><%= link_to "Shopping Cart", order_items_path %></strong><br>
-      <strong><%= link_to "Log Out", logout_path %></strong>
+      <strong><%= link_to "Log Out", logout_path %></strong><br><br>
     <% else %>
       <%= link_to "Log In", login_path %><br>
       <%= link_to "Sign up for a Bialowieza Account", new_user_path %><br>

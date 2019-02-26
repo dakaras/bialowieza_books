@@ -1,7 +1,13 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<div class="book_info">
+</div>
 <br><br><% @authors.each do |author| %>
-  Author Name: <%= link_to author.name, author_path(author) %><br>
-  <p>Published Books: <%= author.books.size %><p><br>
+  Author Name: <%= link_to author.name, author_path(author), class: "load_author" %><br>
+  <p>Published Books by <%= author.name %>: <%= author.books.size %><p><br>
     <% author.books.each do |book| %>
-      Title: <%= link_to book.title, book_path(book) %><br>
+      Title: <%= link_to book.title, book_path(book), class: "load_book" %><br>
     <% end %>
+    <div class='present_info'>
+    </div>
 <% end %>

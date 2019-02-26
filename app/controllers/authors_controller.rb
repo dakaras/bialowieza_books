@@ -13,6 +13,10 @@ class AuthorsController < ApplicationController
 
   def authors_list
     @authors = Author.all.most_published
+    respond_to do |f|
+      f.html { render :authors_list, layout: false }
+      f.json {render json: @authors, layout: false}
+    end
   end
 
 end
