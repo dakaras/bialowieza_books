@@ -2,6 +2,8 @@
 <%= form_for @book, :url => url_for(:controller => 'books', :action => 'create') do |f| %>
   Title:<%= f.text_field :title, placeholder: "Request Book Title" %><br><br>
   Genre:<%= f.text_field :genre, placeholder: "Mystery, Biography" %><br><br>
+  All Requested Custom Orders are: $30<br><br>
+  <%= f.hidden_field :price, value: 30 %><br><br>
   <textarea placeholder="Provide an optional reason for your request.." name="book[summary]" id="book_summary" rows="15" cols="50"></textarea><br><br>
   <%= f.submit "Make Order Request"%>
 <% end %>

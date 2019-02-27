@@ -11,6 +11,8 @@
 <%= form_for @order_item do |f| %>
   <%= f.hidden_field :book_id, value: @book.id %>
   <%= f.number_field :quantity %>
-  <%= f.submit "Add to cart"%>
+  <%= f.submit "Add to Cart"%>
 <% end %></p>
+<h3><%= link_to "See All Authors", authors_path %></h3>
+<h3><%= link_to "See All Books", books_path %></h3>
 <h3><%= link_to  "Home", root_path %></h3>

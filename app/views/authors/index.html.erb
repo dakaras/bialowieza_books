@@ -1,0 +1,7 @@
+<br><br><% @authors.each do |author| %>
+  Author Name: <%= link_to author.name, author_path(author) %><br>
+  <p>Published Books by <%= author.name %>: <%= author.books.size %><p><br>
+    <% author.books.each do |book| %>
+      Title: <%= link_to book.title, book_path(book) %><br>
+    <% end %>
+<% end %>

@@ -2,6 +2,7 @@ class BooksController < ApplicationController
   before_action :authorize
 
   def index
+    @order_item = current_user.cart.order_items.new
     if params[:author_id]
       @books = Book.all.where(author_id: params[:author_id])
     else

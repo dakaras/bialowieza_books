@@ -4,26 +4,26 @@
 
 <ul id='author_show'>
   <% @author.books.each do |book| %>
-    <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %>
-    <strong><h3> Title: <%= link_to book.title, author_book_path(@author, book) %></h3></strong>
-    <strong><p> Genre: <%= book.genre %></p></strong>
+    <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %><br><br>
+    <strong> Title: </strong><h3><%= link_to book.title, author_book_path(@author, book) %></h3>
+    <!-- <strong> Genre: </strong><p><%= book.genre %></p> -->
 
     <% if !book.price.blank? %>
-      <strong><p> Price: <%= number_to_currency book.price %></p></strong>
+      <strong> Price: </strong> <p><%= number_to_currency book.price %></p>
     <% end %>
-    <% if !book.summary.blank? %>
-      <strong><p> Summary: <%= book.summary %></p></strong>
-    <% end %>
+    <!-- <% if !book.summary.blank? %>
+      <strong> Summary: </strong> <p><%= book.summary %></p>
+    <% end %> -->
 
     <%= form_for @order_item do |f| %>
       <%= f.hidden_field :book_id, value: book.id %>
       <%= f.number_field :quantity %>
-      <%= f.submit "Add to cart"%>
+      <%= f.submit "Add to Cart"%>
     <% end %><br>
   <% end %>
 </ul>
 
-<%= link_to "Request a Book to be Ordered", new_author_book_path(@author) %><br><br>
-<%= link_to "See All Authors' Published Works", authors_list_path %>
-
-<h3><%= link_to "Home", root_path %></h3>
+<h3><%= link_to "Request a Book to be Ordered", new_author_book_path(@author) %></h3>
+<h3><%= link_to "See All Authors", authors_path %></h3>
+<h3><%= link_to "See All Books", books_path %></h3>
+<h3><%= link_to  "Home", root_path %></h3>

@@ -27,36 +27,25 @@ Book.prototype.bookInfoTemplate = function(){
 }
 
 
-// Book.success = function(json){
-//   const book = new Book({id: json.data.id, title: json.data.attributes.title, genre: json.data.attributes.genre, price: json.data.attributes.price, summary: json.data.attributes.summary, authorId: json.data.attributes['author-id'] })
-//   const bookHTML = book.bookHTML()
-//   $('#author_show').append(bookHTML)
-// }
-//
-// Book.fail = function(err){
-//   console.error("Error:"err)
-// }
-//
-//
-// Book.prototype.bookHTML = function(){
-//   return (`
-//     <div>${this.title}</div>
-//     `)
-// }
-//
-// Dish.prototype.formatRestaurantDish = function() {
-//   return `<li><strong><a href="/dishes/${this.id}">${this.name}</a></strong> | Added to 1 Dish-List</li><br><br>`
-// }
-//
-// function getBooks(){
-//   $.ajax({
-//     url: 'http://localhost:3000/books',
-//     method: 'get',
-//     dataType: 'json'
-//   }).done(function(response) {
-//     console.log('response:' response)
-//     let book = new Book(response[0])
-//     let bookDisplay = book.bookHTML()
-//     //append to the DOM
-//   })
-// }
+Book.prototype.bookHTML = function(){
+  return (`
+    <div>${this.title}</div>
+    `)
+}
+
+Book.prototype.formatBook = function() {
+  return `<div><strong><a href="/books/${this.id}">${this.name}</a></strong></div><br><br>`
+}
+
+function getBooks(){
+  $.ajax({
+    url: 'http://localhost:3000/books',
+    method: 'get',
+    dataType: 'json'
+  }).done(function(response) {
+    // console.log('response:' response)
+    let book = new Book(response[0])
+    let bookDisplay = book.bookHTML()
+    //append to the DOM
+  })
+}

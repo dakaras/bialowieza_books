@@ -1,6 +1,13 @@
+<div class="book_info">
+</div>
 <% @books.each do |book| %>
   <p><%= book.title %> | <%= number_to_currency book.price %>
-  <p>Title: <%= link_to book.title, book_path(book) %><br> Author: <%= link_to book.author.name, author_path(book.author) %></p>
-  <p>Genre: <%= book.genre %>
-  <p>Summary: <%= book.summary %></p>
+  <p>Title: <%= link_to book.title, book_path(book), class: "load_book" %><br> Author: <%= link_to book.author.name, author_path(book.author), class: "load_author" %></p>
+  <!-- <p>Genre: <%= book.genre %>
+  <p>Summary: <%= book.summary %></p> -->
+  <%= form_for @order_item do |f| %>
+    <%= f.hidden_field :book_id, value: book.id %>
+    <%= f.number_field :quantity %>
+    <%= f.submit "Add to Cart"%>
+  <% end %><br>
 <% end %>
