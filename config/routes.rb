@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get '/auth/github/callback', to: 'sessions#create'
   root 'site#index'
   get '/about', to: 'site#about'
+  get '/books/:id/summary', to: 'books#summary'
 
   resources :users, only: [:new, :create]
   resources :sessions, only: [:new, :create, :destroy]

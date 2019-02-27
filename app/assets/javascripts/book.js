@@ -1,21 +1,46 @@
 $(function(){
   console.log('index.js loaded..')
-  // getBooks()
+  listenForClick()
 })
 
+function listenForClick(){
+  $('a.load_book').on('click', function(event){
+    event.preventDefault()
+    getBook()
+  })
+}
+
+function getBook(){
+  $.ajax({
+    url: this.href,
+    method: 'get',
+    dataType: 'json'
+    //this .ajax block is the same as url.json
+  }).done(function(response) {
+    console.log('response:')
+    response.forEach(function(book){
+      const newBook = new Book(book)
+      const newBookTemplate = newBook.bookInfoTemplate()
+      //append to the DOM
+      document.querySelector('div.book_info').innerHTML += newBook
+    })
+  })
+}
+
+//turn JSON data into strings for the attributes by creating a Book object
 class Book {
   constructor(obj){
     this.id = obj.id
     this.title = obj.title
+    this.author = obj.author
     this.genre = obj.genre
     this.price = obj.price
     this.summary = obj.summary
-    this.author_id = obj.author_id
   }
 }
 
 
-// Create html to display new book and append to dom
+// Create html framework to display new book and append to DOM
 Book.prototype.bookInfoTemplate = function(){
   return (`
     <p> Title: ${this.title} </p>
@@ -26,26 +51,16 @@ Book.prototype.bookInfoTemplate = function(){
     `)
 }
 
-
-Book.prototype.bookHTML = function(){
-  return (`
-    <div>${this.title}</div>
-    `)
-}
-
 Book.prototype.formatBook = function() {
   return `<div><strong><a href="/books/${this.id}">${this.name}</a></strong></div><br><br>`
 }
 
-function getBooks(){
-  $.ajax({
-    url: 'http://localhost:3000/books',
-    method: 'get',
-    dataType: 'json'
-  }).done(function(response) {
-    // console.log('response:' response)
-    let book = new Book(response[0])
-    let bookDisplay = book.bookHTML()
-    //append to the DOM
-  })
-}
+// // clear the OL html (in case there were stale comments)
+// var $ol = $("div.comments ol")
+// $ol.html("") // emptied the OL
+//
+// // iterate over each comment within json
+// json.forEach(function(comment){
+//   // with each comment data, append an LI to the OL with the comment content
+//   $ol.append("<li>" + comment.content + "</li>");
+// })
