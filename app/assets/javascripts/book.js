@@ -1,28 +1,29 @@
 $(function(){
-  console.log('index.js loaded..')
+  console.log('book.js loaded..')
   listenForClick()
 })
 
 function listenForClick(){
-  $('a.load_book').on('click', function(event){
+  $('a.load_book').on('click', event => {
     event.preventDefault()
     getBook()
   })
 }
 
 function getBook(){
+  //this .ajax block is the same as url.json
   $.ajax({
     url: this.href,
     method: 'get',
     dataType: 'json'
-    //this .ajax block is the same as url.json
-  }).done(function(response) {
-    console.log('response:')
-    response.forEach(function(book){
+  }).done(response => {
+    console.log(response)
+    response.forEach(book => {
+      document.querySelector('div#book_info').innerHTML = ""
       const newBook = new Book(book)
       const newBookTemplate = newBook.bookInfoTemplate()
-      //append to the DOM
-      document.querySelector('div.book_info').innerHTML += newBook
+      // append to the DOM
+      document.querySelector('div#book_info').innerHTML = newBookTemplate
     })
   })
 }
@@ -39,7 +40,6 @@ class Book {
   }
 }
 
-
 // Create html framework to display new book and append to DOM
 Book.prototype.bookInfoTemplate = function(){
   return (`
@@ -49,10 +49,6 @@ Book.prototype.bookInfoTemplate = function(){
     <p> Price: ${this.price} </p>
     <p> Summary: ${this.summary} </p>
     `)
-}
-
-Book.prototype.formatBook = function() {
-  return `<div><strong><a href="/books/${this.id}">${this.name}</a></strong></div><br><br>`
 }
 
 // // clear the OL html (in case there were stale comments)

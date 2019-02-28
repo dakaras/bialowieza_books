@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post '/sessions', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
   get '/auth/github/callback', to: 'sessions#create'
-  root 'site#index'
+  root 'books#index'
   get '/about', to: 'site#about'
   get '/books/:id/summary', to: 'books#summary'
 
