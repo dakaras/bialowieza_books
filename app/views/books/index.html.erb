@@ -6,6 +6,8 @@
   <h2> All Books </h2>
   <div id="book_info">
   </div>
+
+    <br><br><h3><button id='load_books'>Expand All Book Details</button></h3>
   <% @books.each do |book| %>
     <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %>
     <p>Title: <%= link_to book.title, book_path(book), class: "load_book" %><br> Author: <%= link_to book.author.name, author_path(book.author) %></p>

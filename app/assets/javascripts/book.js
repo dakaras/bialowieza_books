@@ -4,13 +4,13 @@ $(function(){
 })
 
 function listenForClick(){
-  $('a.load_book').on('click', event => {
+  $('#load_books').on('click', event => {
     event.preventDefault()
-    getBook()
+    getBooks()
   })
 }
 
-function getBook(){
+function getBooks(){
   //this .ajax block is the same as url.json
   $.ajax({
     url: this.href,
@@ -19,11 +19,10 @@ function getBook(){
   }).done(response => {
     console.log(response)
     response.forEach(book => {
-      document.querySelector('div#book_info').innerHTML = ""
       const newBook = new Book(book)
       const newBookTemplate = newBook.bookInfoTemplate()
       // append to the DOM
-      document.querySelector('div#book_info').innerHTML = newBookTemplate
+      document.querySelector('div#book_info').innerHTML += newBookTemplate
     })
   })
 }
