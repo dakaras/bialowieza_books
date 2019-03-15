@@ -1,31 +1,8 @@
 $(function(){
   console.log('book.js loaded..')
-  listenForClick()
+  listenForClicks()
+  displayBook()
 })
-
-function listenForClick(){
-  $('#load_books').on('click', event => {
-    event.preventDefault()
-    getBooks()
-  })
-}
-
-function getBooks(){
-  //this .ajax block is the same as url.json
-  $.ajax({
-    url: this.href,
-    method: 'get',
-    dataType: 'json'
-  }).done(response => {
-    console.log(response)
-    response.forEach(book => {
-      const newBook = new Book(book)
-      const newBookTemplate = newBook.bookInfoTemplate()
-      // append to the DOM
-      document.querySelector('div#book_info').innerHTML += newBookTemplate
-    })
-  })
-}
 
 //turn JSON data into strings for the attributes by creating a Book object
 class Book {
@@ -42,20 +19,60 @@ class Book {
 // Create html framework to display new book and append to DOM
 Book.prototype.bookInfoTemplate = function(){
   return (`
-    <p> Title: ${this.title} </p>
+    <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="400" height="400" %><br><br>
+    Title: <a href= "/books/${this.id}" data-id="${this.id}" class="show_book">${this.title}</a>
+    <p> Author: ${this.author.name} </p>
+    <p> Price: $${this.price} </p>
+    <input type="number" value="1" name="order_item[quantity]" id="order_item_quantity">
+    <input type="submit" name="commit" value="Add to Cart" data-disable-with="Add to Cart"><br><br>
+    `)
+}
+
+Book.prototype.bookShowTemplate = function(){
+  return (`
+    <p>Title: ${this.title} </p>
     <p> Author: ${this.author.name} </p>
     <p> Genre: ${this.genre} </p>
-    <p> Price: ${this.price} </p>
+    <p> Price: $${this.price} </p>
     <p> Summary: ${this.summary} </p>
     `)
 }
 
-// // clear the OL html (in case there were stale comments)
-// var $ol = $("div.comments ol")
-// $ol.html("") // emptied the OL
-//
-// // iterate over each comment within json
-// json.forEach(function(comment){
-//   // with each comment data, append an LI to the OL with the comment content
-//   $ol.append("<li>" + comment.content + "</li>");
-// })
+function listenForClicks(){
+  $('#load_books').on('click', event => {
+    event.preventDefault()
+    history.pushState(null, null, "books")
+    getBooks()
+  })
+}
+
+function displayBook(){
+  $(document).on("click", ".show_book", function(event) {
+    event.preventDefault()
+    let id = ($(this).attr("data-id"))
+    fetch(`/books/${id}.json`)
+    .then(res => res.json())
+    .then(book => {
+      $("#display_book").html("")
+      book = new Book(book)
+      let bookHtml = book.bookShowTemplate()
+      $("#display_book").append(bookHtml)
+    })
+  })
+}
+
+function getBooks(){
+  //this .ajax block is the same as url.json
+  $.ajax({
+    url: this.href,
+    method: 'get',
+    dataType: 'json'
+  }).done(response => {
+    response.forEach(book => {
+      const newBook = new Book(book)
+      const newBookTemplate = newBook.bookInfoTemplate()
+      // append to the DOM
+      document.querySelector('div#books_info').innerHTML += newBookTemplate
+    })
+  })
+}

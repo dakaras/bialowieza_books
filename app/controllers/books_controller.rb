@@ -25,7 +25,6 @@ class BooksController < ApplicationController
     @book = Book.new(book_params)
     @book.author = Author.find(params[:author_id])
     @book.save
-    redirect_to author_path(@book.author)
     respond_to do |f|
       f.html {redirect_to author_path(@book.author)}
       f.json {render json: @book}
@@ -37,7 +36,7 @@ class BooksController < ApplicationController
     @book = Book.find_by(id: params[:id])
     @author = @book.author.name
     respond_to do |f|
-      f.html { render :show}
+      f.html {render :show}
       f.json {render json: @book}
     end
   end

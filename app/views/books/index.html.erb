@@ -3,20 +3,21 @@
   <img src="http://u.profitroom.pl/hotel-zubrowka.pl/uploads/thumbs/1600x900/201311081336390.baner_las_80proc.jpg?1532476800026" width="1300" height="408" >
 </a>
 <ul>
-  <h2> All Books </h2>
-  <div id="book_info">
+  <div id="display_book">
+  </div>
+  <div id="books_info">
   </div>
 
-    <br><br><h3><button id='load_books'>Expand All Book Details</button></h3>
-  <% @books.each do |book| %>
+  <h2><button id='load_books' align='left'>Expand All Book Details</button></h2>
+  <!-- <% @books.each do |book| %>
     <%= link_to image_tag("https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg"), book_path(book) %>
-    <p>Title: <%= link_to book.title, book_path(book), class: "load_book" %><br> Author: <%= link_to book.author.name, author_path(book.author) %></p>
+    <p>Title: <%= link_to book.title, book_path(book) %><br> Author: <%= link_to book.author.name, author_path(book.author) %></p>
     <%= form_for @order_item do |f| %>
       <%= f.hidden_field :book_id, value: book.id %>
       <%= f.number_field :quantity %>
       <%= f.submit "Add to Cart"%>
     <% end %><br>
-  <% end %>
+  <% end %> -->
 </ul>
 <h3><%= link_to "See Every Book by Author", authors_path %></h3>
-<%= link_to "Back to Top", root_path %>
+<h3><%= link_to "Back to Top", root_path %></h3>

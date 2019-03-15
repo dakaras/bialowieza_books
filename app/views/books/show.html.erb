@@ -1,12 +1,14 @@
 <br><br>
 <img style="-webkit-user-select: none;cursor: zoom-in;" src="https://images.wisegeek.com/two-shelves-of-books.jpg" width="1500" height="300">
 
-<p class="book_show">
+<p>
   <strong><h2><%= @book.title %></h2></strong>
+  <!-- <%= link_to "Expand Book Details", book_path(@book), :class => "book_show" %> -->
+  <button class="book_show" data-id="<%= @book.id %>">Expand for Details</button>
   <strong><h3> Author: </strong><%= link_to @book.author.name, author_path(@book.author) %></h3>
   <strong>Price: </strong><p><%= number_to_currency @book.price %></p>
-  <strong>Genre: </strong><p><%= @book.genre %></p>
-  <div id="summary-<%= @book.id %>"><strong>Summary:</strong> <p><%= truncate @book.summary %></p></div>
+  <!-- <strong>Genre: </strong><p><%= @book.genre %></p>
+  <div id="summary-<%= @book.id %>"><strong>Summary:</strong> <p><%= truncate @book.summary %></p></div> -->
   <!-- <button class="js-more" data-id="<%= @book.id %>">More...</button> -->
 </p>
 <%= form_for @order_item do |f| %>
@@ -17,15 +19,3 @@
 <h3><%= link_to "See Every Book by Author", authors_path %></h3>
 <h3><%= link_to "See All Books", root_path %></h3>
 <h3><%= link_to  "Home", root_path %></h3>
-
-<!-- <script type="text/javascript" charset="utf-8">
-$(function () {
-  $(".js-more").on('click', function() {
-    // get the id from the data attribute
-    let id = $(this).data("id");
-    $.get("/books/" + id + "summary", function(data) {
-      $("#summary-" + id).text(data);
-    });
-  });
-});
-</script> -->

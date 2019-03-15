@@ -3,7 +3,7 @@
   <p>Published Books by <%= author.name %>: <%= author.books.size %><p><br>
     <% author.books.each do |book| %>
       Title: <%= link_to book.title, book_path(book) %><br>
-      <div class="summary-<%= book.id %>"><strong>Summary:</strong> <p><%= truncate(book.summary) %></p></div>
+      <!-- <div class="summary-<%= book.id %>"><strong>Summary:</strong> <p><%= truncate(book.summary) %></p></div> -->
       <!-- <button class="js-more" data-id="<%= book.id %>">More...</button> -->
     <% end %>
 <% end %>
