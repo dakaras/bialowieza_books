@@ -35,7 +35,7 @@ Book.prototype.bookShowTemplate = function(){
     <p> Genre: ${this.genre} </p>
     <p> Price: $${this.price} </p>
     <p> Summary: ${this.summary} </p>
-    <button class="prev_book" data-id="${this.id}">Prev Book</button><br><br>
+    <button class="prev_book" data-id="${this.id-1}">Prev Book</button><br><br>
     <button class="next_book" data-id="${this.id}">Next Book</button><br><br>
     `)
 }
@@ -67,8 +67,8 @@ function displayBook(){
 
 function prevBook(){
   $(document).on('click', ".prev_book", function(){
-    let id = ($(this).attr("data-id"))
-    fetch(`books/${id}/next`)
+    let id = ($(this).data("id"))
+    fetch(`books/${id-1}/next`)
     .then(res => res.json())
     .then(book => {
       $("#display_book").html("")

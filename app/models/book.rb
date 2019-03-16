@@ -15,11 +15,11 @@ class Book < ApplicationRecord
 
   def previous
     book = Book.where(["id < ?", id]).last
-    if book
+    if book 
       return book
     else
       Book.last
-    end 
+    end
   end
 
   def next

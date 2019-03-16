@@ -43,7 +43,7 @@ class BooksController < ApplicationController
 
   def prev
     @book = Book.find_by(id: params[:id])
-    @prev_book = @book.prev
+    @prev_book = @book.previous
     render json: @prev_book
   end
 
