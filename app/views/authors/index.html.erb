@@ -1,11 +1,11 @@
 <br><br><% @authors.each do |author| %>
   Author Name: <%= link_to author.name, author_path(author) %><br>
-  <p>Published Books by <%= author.name %>: <%= author.books.size %><p><br>
+  <p>Published Books by <%= author.name %>: <%= author.books.size %><p>
     <% author.books.each do |book| %>
       Title: <%= link_to book.title, book_path(book) %><br>
       <!-- <div class="summary-<%= book.id %>"><strong>Summary:</strong> <p><%= truncate(book.summary) %></p></div> -->
       <!-- <button class="js-more" data-id="<%= book.id %>">More...</button> -->
-    <% end %>
+    <% end %><br><br>
 <% end %>
 <h3><%= link_to "See All Books", books_path %></h3>
 <h3><%= link_to  "Home", root_path %></h3>

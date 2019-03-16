@@ -12,6 +12,24 @@ class Book < ApplicationRecord
     self.genre = self.genre.titlecase
     self.title = self.title.titlecase
   end
+
+  def previous
+    book = Book.where(["id < ?", id]).last
+    if book
+      return book
+    else
+      Book.last
+    end 
+  end
+
+  def next
+    book = Book.where(["id > ?", id]).first
+    if book
+      return book
+    else
+      Book.first
+    end
+  end
   # Person
   #   .select('people.id, people.name, comments.text')
   #   .joins(:comments)
@@ -20,5 +38,5 @@ class Book < ApplicationRecord
   # Reports make for a good usage of class scopes, such as "Most Valuable Cart by Customer"
   # where the code would implement a Cart.most_valuable and Cart.by_customer which
   # could be combined as Cart.most_valuable.by_customer(@customer).
-  
+
 end

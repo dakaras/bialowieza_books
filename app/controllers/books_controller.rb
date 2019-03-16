@@ -41,6 +41,18 @@ class BooksController < ApplicationController
     end
   end
 
+  def prev
+    @book = Book.find_by(id: params[:id])
+    @prev_book = @book.prev
+    render json: @prev_book
+  end
+
+  def next
+    @book = Book.find_by(id: params[:id])
+    @next_book = @book.next
+    render json: @next_book
+  end
+
   def summary
     @book = Book.find(params[:id])
     debugger
