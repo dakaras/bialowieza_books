@@ -62,6 +62,7 @@ function displayBook(){
       nextBook()
       prevBook()
     })
+    .catch(err => console.log(err))
   })
 }
 
@@ -77,6 +78,7 @@ function prevBook(){
       $("#display_book").append(bookHtml)
       prevBook()
     })
+    .catch(err => console.log(err))
   })
 }
 
@@ -92,6 +94,7 @@ function nextBook(){
       $("#display_book").append(bookHtml)
       nextBook()
     })
+    .catch(err => console.log(err))
   })
 }
 
