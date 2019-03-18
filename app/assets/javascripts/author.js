@@ -14,19 +14,18 @@ class Author {
 Author.prototype.authorTemplate = function() {
   let authorBooks = this.books.map(book => {
     return (`
-      <p> ${this.title}</p>
+
+      <p> ${book.title}</p>
+      <a href="/books/${this.id}" class="show_book">View Book</a>
       `)
   }).join("")
-  return authorBooks
-}
+  return(`
+    <h3>Published Books by <a href="/authors/${this.id}" class="show_author">${this.name}</a>: ${this.books.length}</h3>
+    <p>${authorBooks}</p>
+    `
+  )
 
-// return `
-// <h3>Published Books by <a href="/authors/${this.id}" class="show_author">${this.name}</a>: ${this.books.length}</h3>
-// <ul class="list_books">
-//   <p>${this.books}</p>
-//   <a href="/books/${this.id}" class="show_book">View Book</a>
-// </ul>
-// // `
+}
 
 function listenForAuthors(){
   $('#load_authors').on('click', event => {
@@ -49,7 +48,6 @@ function getAuthors(){
       newAuthorTemplate += newAuthor.authorTemplate()
       // append to the DOM
       document.querySelector('div#authors_info').innerHTML += newAuthorTemplate
-      debugger
     })
   })
 }
