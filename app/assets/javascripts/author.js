@@ -2,6 +2,8 @@
 $(function(){
   console.log('author.js loaded..')
   listenForAuthors()
+  displayBook()
+  // showAuthor()
 })
 
 class Author {
@@ -10,21 +12,56 @@ class Author {
     this.name = obj.name
     this.books = obj.books
   }
+  static newBookForm(){
+    return (`
+      <p>Request a new book by ${this.name}</p>
+        <form action="/authors/${this.id}/books/new" method='post'>
+        Title: <input type='text' id='book_title' name='title' placeholder="Request Book Title">
+        Genre: <input type='text' id=''book_genre' name='genre' placeholder="Mystery, Biography">
+        <p>All Requested Custom Orders are: $30</p>
+        <input type='hidden' id='book_price' name='price' value='30'>
+        <input type="submit" value="Submit Form">
+      </form>
+      `)
+  }
 }
+
 Author.prototype.authorTemplate = function() {
   let authorBooks = this.books.map(book => {
     return (`
-
       <p> ${book.title}</p>
-      <a href="/books/${this.id}" class="show_book">View Book</a>
+      <a href="/books/${book.id}" data-id="${book.id}" class="show_book">View Book</a>
+      <div class="display_book"></div>
       `)
-  }).join("")
+  }).join("") //.join("") removes commas from each author's array of books
   return(`
-    <h3>Published Books by <a href="/authors/${this.id}" class="show_author">${this.name}</a>: ${this.books.length}</h3>
+    <h3>Published Books by ${this.name}: ${this.books.length}</h3>
+    <a href="/authors/${this.id}/books/new">Request a Book to be Ordered</a>
     <p>${authorBooks}</p>
     `
   )
 
+}
+
+
+function displayBook(){
+  $(document).on("click", ".show_book", function(event) {
+    event.preventDefault()
+    let id = ($(this).attr("data-id"))
+    debugger
+    fetch(`/books/${id}.json`)
+    .then(res => res.json())
+    .then(book => {
+      $("#display_book").html("")
+      book = new Book(book)
+      let bookHtml = book.bookShowTemplate()
+      $("#display_book").append(bookHtml)
+      debugger
+      nextBook()
+      prevBook()
+    })
+    .catch(err => console.log(err))
+  })
 }
 
 function listenForAuthors(){

@@ -13,6 +13,17 @@ class Book {
     this.genre = obj.genre
     this.price = obj.price
     this.summary = obj.summary
+    this.order_items = obj.order_items
+    this.carts = obj.carts
+  }
+  static addBookForm(){
+    return (`
+      <form>
+        <input type="hidden" id="book_id" name="book_id" value="book.id">
+        <input type="number" value="1" name="order_item[quantity]" id="order_item_quantity">
+        <input type="submit" name="commit" value="Add to Cart" data-disable-with="Add to Cart"><br><br>
+      </form>
+      `)
   }
 }
 
@@ -23,8 +34,11 @@ Book.prototype.bookInfoTemplate = function(){
     Title: <a href= "/books/${this.id}" data-id="${this.id}" class="show_book">${this.title}</a>
     <p> Author: <a href="/authors/${this.author.id}" class="show_author">${this.author.name}</a></p>
     <p> Price: $${this.price} </p>
-    <input type="number" value="1" name="order_item[quantity]" id="order_item_quantity">
-    <input type="submit" name="commit" value="Add to Cart" data-disable-with="Add to Cart"><br><br>
+    <form>
+      <input type="hidden" id="book_id" name="book_id" value="book.id">
+      <input type="number" value="1" name="order_item[quantity]" id="order_item_quantity">
+      <input type="submit" name="commit" value="Add to Cart" data-disable-with="Add to Cart"><br><br>
+    </form>
     `)
 }
 
@@ -43,15 +57,22 @@ Book.prototype.bookShowTemplate = function(){
 function listenForClicks(){
   $('#load_books').on('click', event => {
     event.preventDefault()
-    history.pushState(null, null, "books")
+    history.pushState(null, null, "books") //updates url with /books resource
     getBooks()
   })
 }
 
+function listenForNewBookForm(){
+  $('#load_books').on('click', event => {
+    event.preventDefault()
+    history.pushState(null, null, "books") //updates url with /books resource
+    getBooks()
+  })
+}
 function displayBook(){
   $(document).on("click", ".show_book", function(event) {
     event.preventDefault()
-    let id = ($(this).attr("data-id"))
+    let id = ($(this).attr("data-id")) //retrieves data-id from bookShowTemplate() buttons
     fetch(`/books/${id}.json`)
     .then(res => res.json())
     .then(book => {
