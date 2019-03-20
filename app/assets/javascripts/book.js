@@ -1,7 +1,9 @@
+// $(document).ready()
 $(function(){
   console.log('book.js loaded..')
   listenForClicks()
   displayBook()
+  listenForNewBookForm()
 })
 
 //turn JSON data into strings for the attributes by creating a Book object
@@ -25,9 +27,21 @@ class Book {
       </form>
       `)
   }
+  static newBookForm(){
+    return (`
+      <form>
+        <h3>Provide the title and genre of the book by this author that you want ordered.</p>
+        Title: <input type='text' placeholder="Request Book Title">
+        Genre: <input type='text' placeholder="Mystery, Biography">
+        <p><font color="red">All Requested Custom Orders are: $30</font></p>
+        <input type='hidden' value='30'>
+        <input type="submit" value="Submit" class='new_form'><br><br>
+      </form>
+      `)
+  }
 }
 
-// Create html framework to display new book and append to DOM
+// Create html framework to display new book and append to DOM when getBooks() invoked
 Book.prototype.bookInfoTemplate = function(){
   return (`
     <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="400" height="400" %><br><br>
@@ -41,11 +55,16 @@ Book.prototype.bookInfoTemplate = function(){
     </form>
     `)
 }
-
+// formats how book details will look like in DOM when displayBook() invoked
 Book.prototype.bookShowTemplate = function(){
   return (`
+    <button href='/authors/${this.author.id}/books/new' class="new_book_form">Request a Book Order by ${this.author.name}</button>
+    <div id='display_form'>
+    </div>
+
     <p>Title: ${this.title} </p>
     <p> Author: ${this.author.name} </p>
+
     <p> Genre: ${this.genre} </p>
     <p> Price: $${this.price} </p>
     <p> Summary: ${this.summary} </p>
@@ -59,16 +78,26 @@ function listenForClicks(){
     event.preventDefault()
     history.pushState(null, null, "books") //updates url with /books resource
     getBooks()
+    $('#load_books').remove() //expand book details button disappears
   })
 }
 
 function listenForNewBookForm(){
-  $('#load_books').on('click', event => {
+  $(document).on('click', "button.new_book_form", function(event) {
     event.preventDefault()
-    history.pushState(null, null, "books") //updates url with /books resource
-    getBooks()
+    let newBookForm = Book.newBookForm()
+    $("button.new_book_form").remove()
+    $("#display_form").html(newBookForm)
   })
 }
+
+function postBook(){
+  $(document).on('submit', function(event){
+    event.preventDefault()
+
+  })
+}
+
 function displayBook(){
   $(document).on("click", ".show_book", function(event) {
     event.preventDefault()

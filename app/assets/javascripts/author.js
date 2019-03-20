@@ -3,7 +3,7 @@ $(function(){
   console.log('author.js loaded..')
   listenForAuthors()
   displayBook()
-  // showAuthor()
+  listenForNewBookForm()
 })
 
 class Author {
@@ -36,11 +36,19 @@ Author.prototype.authorTemplate = function() {
   }).join("") //.join("") removes commas from each author's array of books
   return(`
     <h3>Published Books by ${this.name}: ${this.books.length}</h3>
-    <a href="/authors/${this.id}/books/new">Request a Book to be Ordered</a>
+    <a href="/authors/${this.id}/books/new" class="new_book_form">Request a Book to be Ordered</a>
     <p>${authorBooks}</p>
     `
   )
 
+}
+
+function listenForNewBookForm(){
+  $("a.new_book_form").on('click', function(event){
+    event.preventDefault()
+    let newBookForm = Author.new_book_form()
+    
+  })
 }
 
 
@@ -56,7 +64,6 @@ function displayBook(){
       book = new Book(book)
       let bookHtml = book.bookShowTemplate()
       $("#display_book").append(bookHtml)
-      debugger
       nextBook()
       prevBook()
     })
@@ -69,6 +76,7 @@ function listenForAuthors(){
     event.preventDefault()
     history.pushState(null, null, "authors")
     getAuthors()
+    $('#load_authors').remove()
   })
 }
 
@@ -85,6 +93,8 @@ function getAuthors(){
       newAuthorTemplate += newAuthor.authorTemplate()
       // append to the DOM
       document.querySelector('div#authors_info').innerHTML += newAuthorTemplate
+      listenForNewBookForm()
+      debugger
     })
   })
 }
