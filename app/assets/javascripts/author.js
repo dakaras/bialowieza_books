@@ -46,8 +46,8 @@ Author.prototype.authorTemplate = function() {
 function listenForNewBookForm(){
   $("a.new_book_form").on('click', function(event){
     event.preventDefault()
-    let newBookForm = Author.new_book_form()
-    
+    let newBookForm = Author. newBookForm()
+    debugger
   })
 }
 
@@ -94,7 +94,6 @@ function getAuthors(){
       // append to the DOM
       document.querySelector('div#authors_info').innerHTML += newAuthorTemplate
       listenForNewBookForm()
-      debugger
     })
   })
 }

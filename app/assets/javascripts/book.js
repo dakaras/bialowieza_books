@@ -27,18 +27,49 @@ class Book {
       </form>
       `)
   }
+  // new_author_book  POST   /authors/:author_id/books
   static newBookForm(){
     return (`
-      <form>
+      <form class='new_form' action='/authors/${this.author_id}/books' data-id="${this.id}" method='post'>
         <h3>Provide the title and genre of the book by this author that you want ordered.</p>
         Title: <input type='text' placeholder="Request Book Title">
         Genre: <input type='text' placeholder="Mystery, Biography">
         <p><font color="red">All Requested Custom Orders are: $30</font></p>
         <input type='hidden' value='30'>
-        <input type="submit" value="Submit" class='new_form'><br><br>
+        <input type="submit" value="Submit"><br><br>
       </form>
       `)
   }
+}
+
+function listenForNewBookForm(){
+  $(document).on('click', "button.new_book_form", function(event) {
+    event.preventDefault()
+    let newBookForm = Book.newBookForm()
+    $("button.new_book_form").remove()
+    $("#display_form").html(newBookForm)
+    listenForSubmit()
+    console.log($(this).attr("data-id"))
+  })
+}
+
+function listenForSubmit(){
+  $('.new_form').submit(function(event){
+    event.preventDefault()  // avoids actual submission of the form.
+    var url = this.action
+
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: $(this).serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+              $("div#display_book").val("")
+              let $div = $("div#display_book")
+              $div.append(data)
+           }
+         });
+  })
 }
 
 // Create html framework to display new book and append to DOM when getBooks() invoked
@@ -82,22 +113,6 @@ function listenForClicks(){
   })
 }
 
-function listenForNewBookForm(){
-  $(document).on('click', "button.new_book_form", function(event) {
-    event.preventDefault()
-    let newBookForm = Book.newBookForm()
-    $("button.new_book_form").remove()
-    $("#display_form").html(newBookForm)
-  })
-}
-
-function postBook(){
-  $(document).on('submit', function(event){
-    event.preventDefault()
-
-  })
-}
-
 function displayBook(){
   $(document).on("click", ".show_book", function(event) {
     event.preventDefault()
@@ -109,6 +124,7 @@ function displayBook(){
       book = new Book(book)
       let bookHtml = book.bookShowTemplate()
       $("#display_book").append(bookHtml)
+
       nextBook()
       prevBook()
     })
