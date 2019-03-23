@@ -10,6 +10,7 @@ $(function(){
 class Book {
   constructor(obj){
     this.id = obj.id
+    this.author_id = obj.author_id
     this.title = obj.title
     this.author = obj.author
     this.genre = obj.genre
@@ -30,10 +31,11 @@ class Book {
   // new_author_book  POST   /authors/:author_id/books
   static newBookForm(){
     return (`
-      <form class='new_form' action='/authors/${this.author_id}/books' data-id="${this.id}" method='post'>
-        <h3>Provide the title and genre of the book by this author that you want ordered.</p>
-        Title: <input type='text' placeholder="Request Book Title">
-        Genre: <input type='text' placeholder="Mystery, Biography">
+      <form class='new_form' action="/authors/${this.author_id}/books" data-id="${this.id}" method='post'>
+        <p>Provide this author's book title and genre of the book that you want ordered.</p>
+        <input type='hidden' value=${this.author}>
+        Title: <input type='text' id="book_title" placeholder="Request Book Title">
+        Genre: <input type='text' id="book_genre" placeholder="Mystery, Biography">
         <p><font color="red">All Requested Custom Orders are: $30</font></p>
         <input type='hidden' value='30'>
         <input type="submit" value="Submit"><br><br>
@@ -42,31 +44,35 @@ class Book {
   }
 }
 
+const clearForm = () => {
+  $('#book_title').val("")
+  $('#book_genre').val("")
+}
+
 function listenForNewBookForm(){
-  $(document).on('click', "button.new_book_form", function(event) {
+  $(document).on('click', "a.new_book_form", function(event) {
     event.preventDefault()
     let newBookForm = Book.newBookForm()
-    $("button.new_book_form").remove()
+    $("a.new_book_form").remove()
     $("#display_form").html(newBookForm)
     listenForSubmit()
-    console.log($(this).attr("data-id"))
   })
 }
 
 function listenForSubmit(){
-  $('.new_form').submit(function(event){
+  $('.new_form').on('submit', function(event){
     event.preventDefault()  // avoids actual submission of the form.
-    var url = this.action
+    let url = $(this).attr("action")
 
     $.ajax({
            type: "POST",
            url: url,
            data: $(this).serialize(), // serializes the form's elements.
-           success: function(data)
-           {
-              $("div#display_book").val("")
-              let $div = $("div#display_book")
-              $div.append(data)
+           success: function(data) {
+            clearForm()
+            $("div#display_book").val("")
+            let $div = $("div#display_book")
+            $div.append(data)
            }
          });
   })
@@ -89,7 +95,7 @@ Book.prototype.bookInfoTemplate = function(){
 // formats how book details will look like in DOM when displayBook() invoked
 Book.prototype.bookShowTemplate = function(){
   return (`
-    <button href='/authors/${this.author.id}/books/new' class="new_book_form">Request a Book Order by ${this.author.name}</button>
+    <a href='/authors/${this.author.id}/books/new' class="new_book_form">Request a Book Order by ${this.author.name}</a>
     <div id='display_form'>
     </div>
 

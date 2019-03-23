@@ -14,11 +14,11 @@ class Author {
   }
   static newBookForm(){
     return (`
-      <p>Request a new book by ${this.name}</p>
-        <form action="/authors/${this.id}/books/new" method='post'>
+        <p>Provide this author's book title and genre of the book that you want ordered.</p>
+        <form class='new_form' action="/authors/${this.id}/books/new" method='post'>
         Title: <input type='text' id='book_title' name='title' placeholder="Request Book Title">
         Genre: <input type='text' id=''book_genre' name='genre' placeholder="Mystery, Biography">
-        <p>All Requested Custom Orders are: $30</p>
+        <p><font color="red">All Requested Custom Orders are: $30</font></p>
         <input type='hidden' id='book_price' name='price' value='30'>
         <input type="submit" value="Submit Form">
       </form>
@@ -29,6 +29,8 @@ class Author {
 Author.prototype.authorTemplate = function() {
   let authorBooks = this.books.map(book => {
     return (`
+      <div id='display_form'>
+      </div>
       <p> ${book.title}</p>
       <a href="/books/${book.id}" data-id="${book.id}" class="show_book">View Book</a>
       <div class="display_book"></div>
@@ -42,21 +44,45 @@ Author.prototype.authorTemplate = function() {
   )
 
 }
+ clearForm = () => {
+  $('#book_title').val("")
+  $('#book_genre').val("")
+}
 
 function listenForNewBookForm(){
-  $("a.new_book_form").on('click', function(event){
+  $(document).on('click', "a.new_book_form", function(event){
     event.preventDefault()
-    let newBookForm = Author. newBookForm()
-    debugger
+    let newBookForm = Author.newBookForm()
+    $("a.new_book_form").remove()
+    $("#display_form").append(newBookForm)
+    listenForSubmit()
   })
 }
 
+function listenForSubmit(){
+  $('.new_form').on('submit', function(event){
+    event.preventDefault()  // avoids actual submission of the form.
+    let url = $(this).attr("action")
+    debugger
+
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: $(this).serialize(), // serializes the form's elements.
+           success: function(data) {
+            clearForm()
+            $("div#display_book").val("")
+            let $div = $("div#display_book")
+            $div.append(data)
+           }
+         });
+  })
+}
 
 function displayBook(){
   $(document).on("click", ".show_book", function(event) {
     event.preventDefault()
     let id = ($(this).attr("data-id"))
-    debugger
     fetch(`/books/${id}.json`)
     .then(res => res.json())
     .then(book => {
