@@ -9,7 +9,7 @@ class BooksController < ApplicationController
       @books = Book.all
     end
     respond_to do |f|
-      f.html { render :index }
+      f.html {render :index}
       f.json {render json: @books}
     end
   end
@@ -25,6 +25,7 @@ class BooksController < ApplicationController
     @book = Book.new(book_params)
     @book.author = Author.find(params[:author_id])
     @book.save
+    raise @book.inspect
     respond_to do |f|
       f.html {redirect_to author_path(@book.author)}
       f.json {render json: @book}

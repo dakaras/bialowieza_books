@@ -3,10 +3,11 @@
   Title:<%= f.text_field :title, placeholder: "Request Book Title" %><br><br>
   Genre:<%= f.text_field :genre, placeholder: "Mystery, Biography" %><br><br>
   All Requested Custom Orders are: $30<br><br>
-  <%= f.hidden_field :price, value: 30 %> 
+  <%= f.hidden_field :price, value: 30 %>
   Quantity:
   <%= f.number_field :quantity, value: 1 %><br><br>
-  <textarea placeholder="Provide an optional reason for your request.." name="book[summary]" id="book_summary" rows="15" cols="50"></textarea><br><br>
+  <%= f.text_area :summary, placeholder: "Provide an optional reason for your request..", rows:"15", cols:"50"%>
   <%= f.submit "Make Order Request"%>
 <% end %>
 <h3><%= link_to "Home", root_path %></h3>
+<!-- <textarea placeholder="Provide an optional reason for your request.." name="book[summary]" id="book_summary" rows="15" cols="50"></textarea><br><br> -->

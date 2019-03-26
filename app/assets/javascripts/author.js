@@ -2,8 +2,8 @@
 $(function(){
   console.log('author.js loaded..')
   listenForAuthors()
-  displayBook()
-  listenForNewBookForm()
+  // displayBook()
+  // listenForNewBookForm()
 })
 
 class Author {
@@ -12,19 +12,21 @@ class Author {
     this.name = obj.name
     this.books = obj.books
   }
-  static newBookForm(){
-    return (`
-        <p>Provide this author's book title and genre of the book that you want ordered.</p>
-        <form class='new_form' action="/authors/${this.id}/books/new" method='post'>
+
+
+}
+Author.prototype.newBookForm = function() {
+    return `
+      <p>Provide this author's book title and genre of the book that you want ordered.</p>
+      <form class='new_form' action="/authors/${this.id}/books" data-id="${this.id}"
         Title: <input type='text' id='book_title' name='title' placeholder="Request Book Title">
         Genre: <input type='text' id=''book_genre' name='genre' placeholder="Mystery, Biography">
         <p><font color="red">All Requested Custom Orders are: $30</font></p>
+        <input type='hidden' id='author' name='author' data-id="${this.id}" value=${this.id}>
         <input type='hidden' id='book_price' name='price' value='30'>
         <input type="submit" value="Submit Form">
       </form>
-      `)
-  }
-}
+`}
 
 Author.prototype.authorTemplate = function() {
   let authorBooks = this.books.map(book => {
@@ -38,7 +40,7 @@ Author.prototype.authorTemplate = function() {
   }).join("") //.join("") removes commas from each author's array of books
   return(`
     <h3>Published Books by ${this.name}: ${this.books.length}</h3>
-    <a href="/authors/${this.id}/books/new" class="new_book_form">Request a Book to be Ordered</a>
+    <a href="/authors/${this.id}/books/new" class="new_book_form" data-id="${this.id}">Request a Book to be Ordered</a>
     <p>${authorBooks}</p>
     `
   )
@@ -63,6 +65,8 @@ function listenForSubmit(){
   $('.new_form').on('submit', function(event){
     event.preventDefault()  // avoids actual submission of the form.
     let url = $(this).attr("action")
+    let id = $(this).data('id')
+    let author_id = ($(this).attr("data-id"))
     debugger
 
     $.ajax({
