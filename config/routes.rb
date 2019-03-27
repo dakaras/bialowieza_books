@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get '/books/:id/summary', to: 'books#summary'
   get '/books/:id/next', to: 'books#next'
   get '/books/:id/prev', to: 'books#prev'
-  
+
   resources :users, only: [:new, :create]
   resources :sessions, only: [:new, :create, :destroy]
   resources :authors do

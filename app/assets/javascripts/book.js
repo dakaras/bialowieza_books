@@ -2,7 +2,6 @@
 $(function(){
   console.log('book.js loaded..')
   listenForIndex()
-  listenForSubmit()
 })
 
 //turn JSON data into strings for the attributes by creating a Book object
@@ -23,7 +22,7 @@ class Book {
 //Creates HTML framework to display Book index page when getBooks() is called
 Book.prototype.bookInfoTemplate = function(){
   return (`
-    <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="400" height="400" %><br><br>
+    <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="400" height="400"><br><br>
     Title: <a href= "/books/${this.id}" data-id="${this.id}" data-author-id='${this.author.id}' class="show_book">${this.title}</a>
     <p> Author: ${this.author.name}</p>
     <p> Price: $${this.price} </p>
@@ -39,8 +38,6 @@ Book.prototype.bookShowTemplate = function(){
    return (`
 
     <button data-author-id='${this.author.id}' class='load_form'>Request a Book Order by ${this.author.name}</button><br><br>
-    <a href='/authors/${this.author.id}/books/new' data-author-id='${this.author.id}'
-
     <div id='display_form'>
     </div>
 
@@ -83,9 +80,11 @@ function getBooks(){
 
 // Displays previous book show page, selected by book.id
 function prevBook(){
-  $(document).on('click', ".prev_book", function(){
+  $(document).on('click', ".prev_book", function(event){
+    event.preventDefault()
+    // event.stopPropagation()
     let id = ($(this).data("id"))
-    fetch(`books/${id-1}/next`)
+    fetch(`/books/${id-1}/next`)
     .then(res => res.json())
     .then(book => {
       $("#display_form").html("")
@@ -93,6 +92,7 @@ function prevBook(){
       let bookHtml = book.bookShowTemplate()
       $("#display_form").append(bookHtml)
       prevBook()
+      // $('.load_form').remove()
     })
     .catch(err => console.log(err))
   })
@@ -100,9 +100,11 @@ function prevBook(){
 
 // Displays next book show page, selected by book.id
 function nextBook(){
-  $(document).on('click', '.next_book', function(){
+  $(document).on('click', '.next_book', function(event){
+    event.preventDefault()
+    // event.stopPropagation()
     let id = ($(this).attr("data-id"))
-    fetch(`books/${id}/next`)
+    fetch(`/books/${id}/next`)
     .then(res => res.json())
     .then(book => {
       $("#display_form").html("")
@@ -110,28 +112,20 @@ function nextBook(){
       let bookHtml = book.bookShowTemplate()
       $("#display_form").append(bookHtml)
       nextBook()
+      // $('.load_form').remove()
     })
     .catch(err => console.log(err))
   })
 }
 
-//html template for creating a new book
 
-
-
-
-function listenForSubmit(){
-  $('form').submit(function(event){
-    event.preventDefault()
-  })
-}
 
 //Listens when book title link is clicked
 $(document).on("click", ".show_book", function(event) {
   event.preventDefault()
-  event.stopPropagation()
+  event.stopPropagation() //preventing any parent event handlers from being executed.
   let $id = ($(this).attr("data-id")) //retrieves data-id from bookShowTemplate() buttons
-  const $authorId = ($(this).data('author-id'))
+  const authorId = ($(this).data('author-id'))
   fetch(`/books/${$id}.json`)
   .then(res => res.json())
   .then(book => {
@@ -151,47 +145,66 @@ $(document).on("click", ".show_book", function(event) {
 })
 
 function listenForNewBookForm() {
-
   $(document).on("click", "button.load_form", function(event) {
     event.preventDefault()
+
     function newBookForm(authorId) {
-        return (`
-          <p>Provide this author's book title and genre of the book that you want ordered.</p>
-          <form class='new_form' action="/authors/${authorId}/books" data-id="${this.id}"
-            Title: <input type='text' id='book_title' name='book[title]' placeholder="Request Book Title" >
-            Genre: <input type='text' id=''book_genre' name='book[genre]' placeholder="Mystery, Biography">
-            <p><font color="red">All Requested Custom Orders are: $30</font></p>
-            <input type='hidden' id='book_author' name='book[author]' data-id="${authorId}" value=${authorId}>
-            <input type='hidden' id='book_price' name='book[price]' value='30'>
-            <input type="submit" value="Submit Form">
-          </form>
+      return (`
+        <div>Provide this author's book title and genre of the book that you want ordered.</div><br><br>
+        <form class='new_form' action="/authors/${authorId}/books" data-id="${this.id}">
+          Title: <input type='text' id='book_title' name='book[title]' placeholder="Request Book Title"><br><br>
+          Genre: <input type='text' id=''book_genre' name='book[genre]' placeholder="Mystery, Biography"><br><br>
+          <p><font color="red">All Requested Custom Orders are: $30</font></p>
+          <input type='hidden' id='book_author' name='book[author]' data-id="${authorId}" value=${authorId}>
+          <input type='hidden' id='book_price' name='book[price]' value='30'>
+          <input type="submit" value="Submit Form"><br><br>
+        </form>
     `)}
-    // event.stopPropagation()
 
     const authorId = $(this).data("author-id")
-    debugger
     let newForm = newBookForm(authorId)
     $("button.load_form").remove()
     $("#display_form").html(newForm)
-    listenForSubmit()
+
+    // listener for submitting form
+    $(document).on('submit', '.new_form', function(event){
+      event.preventDefault()  // avoids actual submission of the form.
+      const attributes = $(this).serialize()
+      // author_books_path POST /authors/:author_id/books
+      $.post(`localhost:3000/authors/${authorId}/books`, attributes)
+      .done(function(data){
+        console.log(data)
+      })
+    })
+    // $('form.new_form').on('submit', function(event){
+    //   event.preventDefault()
+    //   const form = $(this)
+    //   const action = form.attr('action')
+    //   const params = form.serialize()
+    //
+    //   $.ajax({
+    //     url: action,
+    //     method: 'post',
+    //     data: params,
+    //     dataType: 'json'
+    //   })
+    //   .done(function(data){
+    //     console.log(data)
+    //   })
+    // })
   })
 }
-//display show page when book title clicked
-// function displayBook(){
-//   $(document).on("click", ".show_book", function(event) {
-//     event.preventDefault()
-//     let id = ($(this).attr("data-id")) //retrieves data-id from bookShowTemplate() buttons
-//     fetch(`/books/${id}.json`)
-//     .then(res => res.json())
-//     .then(book => {
-//       $(".display_book").html("")
-//       book = new Book(book)
-//       let bookHtml = book.bookShowTemplate()
-//       $(".display_book").append(bookHtml)
-//
-//       nextBook()
-//       prevBook()
-//     })
-//     .catch(err => console.log(err))
-//   })
-// }
+
+// fetch('/api/v1/people.json', {
+//   method: 'post',
+//   body: JSON.stringify({first_name: "Ricky", last_name: "Bobby"}),
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'X-CSRF-Token': Rails.csrfToken()
+//   },
+//   credentials: 'same-origin'
+// }).then(function(response) {
+//   return response.json();
+// }).then(function(data) {
+//   console.log(data);
+// });

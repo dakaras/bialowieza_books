@@ -3,13 +3,9 @@
 
 <p>
   <strong><h2><%= @book.title %></h2></strong>
-  <!-- <%= link_to "Expand Book Details", book_path(@book), :class => "book_show" %> -->
   <button class="book_show" data-id="<%= @book.id %>">Expand for Details</button>
   <strong><h3> Author: </strong><%= link_to @book.author.name, author_path(@book.author) %></h3>
   <strong>Price: </strong><p><%= number_to_currency @book.price %></p>
-  <!-- <strong>Genre: </strong><p><%= @book.genre %></p>
-  <div id="summary-<%= @book.id %>"><strong>Summary:</strong> <p><%= truncate @book.summary %></p></div> -->
-  <!-- <button class="js-more" data-id="<%= @book.id %>">More...</button> -->
 </p>
 <%= form_for @order_item do |f| %>
   <%= f.hidden_field :book_id, value: @book.id %>
