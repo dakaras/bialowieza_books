@@ -36,14 +36,11 @@ Book.prototype.bookInfoTemplate = function(){
 // formats how book details will look like in DOM Book Show page
 Book.prototype.bookShowTemplate = function(){
    return (`
-
     <button data-author-id='${this.author.id}' class='load_form'>Request a Book Order by ${this.author.name}</button><br><br>
     <div id='display_form'>
     </div>
-
     <p>Title: ${this.title} </p>
     <p> Author: ${this.author.name} </p>
-
     <p> Genre: ${this.genre} </p>
     <p> Price: $${this.price} </p>
     <p> Summary: ${this.summary} </p>
@@ -118,8 +115,6 @@ function nextBook(){
   })
 }
 
-
-
 //Listens when book title link is clicked
 $(document).on("click", ".show_book", function(event) {
   event.preventDefault()
@@ -155,7 +150,7 @@ function listenForNewBookForm() {
           Title: <input type='text' id='book_title' name='book[title]' placeholder="Request Book Title"><br><br>
           Genre: <input type='text' id=''book_genre' name='book[genre]' placeholder="Mystery, Biography"><br><br>
           <p><font color="red">All Requested Custom Orders are: $30</font></p>
-          <input type='hidden' id='book_author' name='book[author]' data-id="${authorId}" value=${authorId}>
+          <input type='hidden' id='book_author' name='book[author_id]' data-id="${authorId}" value=${authorId}>
           <input type='hidden' id='book_price' name='book[price]' value='30'>
           <input type="submit" value="Submit Form"><br><br>
         </form>
@@ -171,40 +166,16 @@ function listenForNewBookForm() {
       event.preventDefault()  // avoids actual submission of the form.
       const attributes = $(this).serialize()
       // author_books_path POST /authors/:author_id/books
-      $.post(`localhost:3000/authors/${authorId}/books`, attributes)
+      $.post(`http://localhost:3000/authors/${authorId}/books.json`, attributes)
       .done(function(data){
-        console.log(data)
+
+        const newBook = new Book(data)
+        const bookHtml = newBook.bookShowTemplate()
+        //displays author's newly ordered book show page
+        $("#display_book").append(bookHtml)
+        $("#display_form").html("")
+
       })
     })
-    // $('form.new_form').on('submit', function(event){
-    //   event.preventDefault()
-    //   const form = $(this)
-    //   const action = form.attr('action')
-    //   const params = form.serialize()
-    //
-    //   $.ajax({
-    //     url: action,
-    //     method: 'post',
-    //     data: params,
-    //     dataType: 'json'
-    //   })
-    //   .done(function(data){
-    //     console.log(data)
-    //   })
-    // })
   })
 }
-
-// fetch('/api/v1/people.json', {
-//   method: 'post',
-//   body: JSON.stringify({first_name: "Ricky", last_name: "Bobby"}),
-//   headers: {
-//     'Content-Type': 'application/json',
-//     'X-CSRF-Token': Rails.csrfToken()
-//   },
-//   credentials: 'same-origin'
-// }).then(function(response) {
-//   return response.json();
-// }).then(function(data) {
-//   console.log(data);
-// });

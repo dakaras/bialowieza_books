@@ -1,5 +1,6 @@
 class BooksController < ApplicationController
   before_action :authorize
+  skip_before_action :verify_authenticity_token
 
   def index
     @order_item = current_user.cart.order_items.new
@@ -22,10 +23,10 @@ class BooksController < ApplicationController
   end
 
   def create
+    
     @book = Book.new(book_params)
     @book.author = Author.find(params[:author_id])
     @book.save
-    raise @book.inspect
     respond_to do |f|
       f.html {redirect_to author_path(@book.author)}
       f.json {render json: @book}
@@ -54,14 +55,8 @@ class BooksController < ApplicationController
     render json: @next_book
   end
 
-  def summary
-    @book = Book.find(params[:id])
-    debugger
-    render plain: @book.summary
-  end
-
   private
   def book_params
-    params.require(:book).permit(:title, :author_id, :genre, :summary, :price)
+    params.require(:book).permit(:title, :author_id, :genre, :price)
   end
 end
