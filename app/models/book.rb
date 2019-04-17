@@ -13,21 +13,21 @@ class Book < ApplicationRecord
     self.title = self.title.titlecase
   end
 
-  def previous
+  def previous_id  # => returns prev book book in database, not strictly by id number
     book = Book.where(["id < ?", id]).last
-    if book 
-      return book
+    if book
+      return book.id
     else
-      Book.last
+      Book.last.id
     end
   end
 
-  def next
-    book = Book.where(["id > ?", id]).first
+   def next_id   # => returns next book book in database, not strictly by id number
+    book = Book.where(["id > ?", id]).first   #whitelist variable to prevent SQL injection
     if book
-      return book
+      return book.id
     else
-      Book.first
+      Book.first.id
     end
   end
   # Person

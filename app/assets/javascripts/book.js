@@ -2,20 +2,24 @@
 $(function(){
   console.log('book.js loaded..')
   listenForIndex()
+  nextBook()
+  prevBook()
 })
 
 //turn JSON data into strings for the attributes by creating a Book object
 class Book {
   constructor(obj){
     this.id = obj.id
-    this.author_id = obj.author_id
+    this.authorId = obj.author_id
     this.title = obj.title
     this.author = obj.author
     this.genre = obj.genre
     this.price = obj.price
     this.summary = obj.summary
-    this.order_items = obj.order_items
+    this.orderItems = obj.order_items
     this.carts = obj.carts
+    this.previousId = obj.previous_id
+    this.nextId = obj.next_id
   }
 }
 
@@ -34,7 +38,7 @@ Book.prototype.bookInfoTemplate = function(){
     `)
 }
 // formats how book details will look like in DOM Book Show page
-Book.prototype.bookShowTemplate = function(){
+Book.prototype.bookShowTemplate = function(){   //can't use arrow functions in prototype methods!!
    return (`
     <button data-author-id='${this.author.id}' class='load_form'>Request a Book Order by ${this.author.name}</button><br><br>
     <div id='display_form'>
@@ -44,16 +48,16 @@ Book.prototype.bookShowTemplate = function(){
     <p> Genre: ${this.genre} </p>
     <p> Price: $${this.price} </p>
     <p> Summary: ${this.summary} </p>
-    <button class="prev_book" data-id="${this.id-1}">Prev Book</button><br><br>
-    <button class="next_book" data-id="${this.id}">Next Book</button><br><br>
+    <button id="prev_book" data-previd="${this.previousId}">Prev Book</button><br><br>
+    <button id="next_book" data-nextid="${this.nextId}">Next Book</button><br><br>
   `)}
 
 //Listens when 'Expand All Book Details' button is clicked
 function listenForIndex(){
-  $('#load_books').on('click', event => {
+  $('#load_books').on('click', function(event){
     event.preventDefault()
     history.pushState(null, null, "books") //updates url with /books resource
-    getBooks()
+    getBooks.call(this)
     $('#load_books').remove() //expand book details button disappears
   })
 }
@@ -62,7 +66,7 @@ function listenForIndex(){
 function getBooks(){
   //this .ajax block is the same as url.json
   $.ajax({
-    url: this.href,
+    url: this.dataset.url,
     method: 'get',
     dataType: 'json'
   }).done(response => {
@@ -77,41 +81,44 @@ function getBooks(){
 
 // Displays previous book show page, selected by book.id
 function prevBook(){
-  $(document).on('click', ".prev_book", function(event){
+  $(document).on('click', "#prev_book", function(event){
     event.preventDefault()
     // event.stopPropagation()
-    let id = ($(this).data("id"))
-    fetch(`/books/${id-1}/next`)
+    let id = this.dataset.previd
+    fetch(`/books/${id}.json`)
     .then(res => res.json())
     .then(book => {
-      $("#display_form").html("")
+      $("#display_book").html("")
       book = new Book(book)
       let bookHtml = book.bookShowTemplate()
-      $("#display_form").append(bookHtml)
-      prevBook()
+      $("#display_book").append(bookHtml)
       // $('.load_form').remove()
     })
     .catch(err => console.log(err))
+    history.pushState(null, null, `/books/${id}`)
   })
 }
 
 // Displays next book show page, selected by book.id
 function nextBook(){
-  $(document).on('click', '.next_book', function(event){
+  $(document).on('click', '#next_book', function(event){
     event.preventDefault()
     // event.stopPropagation()
-    let id = ($(this).attr("data-id"))
-    fetch(`/books/${id}/next`)
+    $("#display_book").html("")
+    let id = ($(this).attr("data-nextid"))
+    fetch(`/books/${id}.json`)
     .then(res => res.json())
     .then(book => {
-      $("#display_form").html("")
+      // $("#display_book").html("")
+
       book = new Book(book)
       let bookHtml = book.bookShowTemplate()
-      $("#display_form").append(bookHtml)
-      nextBook()
+      $("#display_book").append(bookHtml)
       // $('.load_form').remove()
     })
     .catch(err => console.log(err))
+    history.pushState(null, null, `/books/${id}`)
+    // $("#display_book").html("")
   })
 }
 
@@ -132,9 +139,6 @@ $(document).on("click", ".show_book", function(event) {
 
     //displays book show page
     $("#display_book").append(bookHtml)
-
-    nextBook()
-    prevBook()
   })
   .catch(err => console.log(err))
 })

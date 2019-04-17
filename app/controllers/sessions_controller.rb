@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       @user = User.find_by(email: params[:email])
       if @user && @user.authenticate(params[:password])
         session[:user_id] = @user.id
-        redirect_to root_path, notice: "Welcome back #{@user.name.capitalize}!"
+        redirect_to books_path, notice: "Welcome back #{@user.name.capitalize}!"
       else
         flash[:notice] = "Incorrect email or password. Please try logging in again."
         render 'sessions/new' # login_path
