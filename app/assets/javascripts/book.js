@@ -2,6 +2,7 @@
 $(function(){
   console.log('book.js loaded..')
   listenForIndex()
+  listenForAuthorSort()
   nextBook()
   prevBook()
 })
@@ -26,7 +27,7 @@ class Book {
 //Creates HTML framework to display Book index page when getBooks() is called
 Book.prototype.bookInfoTemplate = function(){
   return (`
-    <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="400" height="400"><br><br>
+    <img src="https://www.ioba.org/pages/wp-content/uploads/2011/12/alledgesgilt.jpg" alt= ${this.title} width="100" height="100"><br><br>
     Title: <a href= "/books/${this.id}" data-id="${this.id}" data-author-id='${this.author.id}' class="show_book">${this.title}</a>
     <p> Author: ${this.author.name}</p>
     <p> Price: $${this.price} </p>
@@ -57,7 +58,7 @@ function listenForIndex(){
   $('#load_books').on('click', function(event){
     event.preventDefault()
     history.pushState(null, null, "books") //updates url with /books resource
-    getBooks.call(this)
+    getBooks.call(this) //binds this to getBooks method to use as the url request
     $('#load_books').remove() //expand book details button disappears
   })
 }
@@ -126,7 +127,7 @@ function nextBook(){
 $(document).on("click", ".show_book", function(event) {
   event.preventDefault()
   event.stopPropagation() //preventing any parent event handlers from being executed.
-  let $id = ($(this).attr("data-id")) //retrieves data-id from bookShowTemplate() buttons
+  let $id = ($(this).attr("data-id")) //retrieves data-id from bookInfoTemplate() link
   const authorId = ($(this).data('author-id'))
   fetch(`/books/${$id}.json`)
   .then(res => res.json())
@@ -168,7 +169,7 @@ function listenForNewBookForm() {
     // listener for submitting form
     $(document).on('submit', '.new_form', function(event){
       event.preventDefault()  // avoids actual submission of the form.
-      const attributes = $(this).serialize()
+      const attributes = $(this).serialize() //stringifies the form submission in standard URL-encoded notation.
       // author_books_path POST /authors/:author_id/books
       $.post(`http://localhost:3000/authors/${authorId}/books.json`, attributes)
       .done(function(data){
@@ -178,8 +179,50 @@ function listenForNewBookForm() {
         //displays author's newly ordered book show page
         $("#display_book").append(bookHtml)
         $("#display_form").html("")
-
       })
     })
   })
 }
+
+//Listens when Sort by Author button is clicked
+function listenForAuthorSort(){
+  $("#sort_books").on('click', function(event){
+    event.preventDefault()
+    $.ajax({
+      url: this.dataset.url,
+      method: 'get',
+      dataType: 'json'
+    }).done(response => {
+      let arr = response.map(book => new Book(book))
+      arr.sort((a,b) => {
+        let nameA = a.author.name.toUpperCase(); //accounts for edge case w/ upper & lowercase letters
+        let nameB = b.author.name.toUpperCase();
+        let titleA = a.title
+        let titleB = b.title
+
+        if (nameA < nameB){
+          return -1;
+        }
+        if (nameA > nameB){
+          return 1;
+        }
+        if (titleA < titleB){
+          return -1
+        }
+        if (titleA > titleB){
+          return 1;
+        }
+        // both elements are equal
+        return 0;
+      })
+      arr.forEach(book => {
+       const newBookTemplate = book.bookInfoTemplate()
+       document.querySelector('div#books_info').innerHTML += newBookTemplate
+      })
+    })
+  })
+}
+
+
+// document.querySelector('div#books_info').innerHTML += arr
+// $("#sort_books").remove()
