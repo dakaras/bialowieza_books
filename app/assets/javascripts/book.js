@@ -58,7 +58,7 @@ function listenForIndex(){
   $('#load_books').on('click', function(event){
     event.preventDefault()
     history.pushState(null, null, "books") //updates url with /books resource
-    getBooks.call(this) //binds this to getBooks method to use as the url request
+    getBooks.call(this) //binds current this object reference for getBooks method to use as the url request
     $('#load_books').remove() //expand book details button disappears
   })
 }
