@@ -13,7 +13,7 @@ View this app on Github at https://github.com/dakaras/bialowieza_books
 
 To use this app, simply clone this repository, run 'bundle install' and 'rake db:migrate'.
 
-To watch a walkthrough demo of this app, please go to: https://www.youtube.com/watch?v=De5Yg-EOP9U&feature=youtu.be
+To watch a walkthrough demo of this app, please go to: https://www.youtube.com/watch?v=XZbP17oAOro&feature=youtu.be
 
 To seed the database with example data, run rake db:seed.
 
